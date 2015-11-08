@@ -8,8 +8,6 @@ app = Flask(__name__)
 # Homepage - displays categories and associated items
 @app.route('/')
 def homePage():
-    #categories = session.query(Category).all()
-    #items = session.query(Item).all()
     return render_template('index.html')
 
 
