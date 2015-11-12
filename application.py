@@ -5,7 +5,7 @@ from database_setup import Base, Item, Category
 
 app = Flask(__name__)
 
-# engine for session for connection 
+# engine for session for connection
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
 
@@ -49,7 +49,9 @@ def create_item():
         session.add(item)
         session.commit()
         message = 'Item was inserted into db'
-    return render_template("create-item.html", categories=cats, message=message)
+    return render_template("create-item.html",
+                           categories=cats,
+                           message=message)
 
 
 # query db for items or categories
