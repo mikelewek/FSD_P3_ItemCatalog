@@ -1,0 +1,16 @@
+create item template
+<br><br>
+{% if message %}
+	{{ message }}
+{% endif %}
+
+<form action="/create-item" method="post">
+	<input type="text" name="title">
+	<input type="text" name="description">
+    <select name="category_id">
+        {% for row in categories %}
+            <option value="{{ row.id }}">{{ row.title }}</option>
+        {% endfor %}
+    </select>
+	<button type="submit" name="submit">Submit</button>
+</form>

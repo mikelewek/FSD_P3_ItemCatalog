@@ -1,1 +1,14 @@
 home template
+<br><br>
+
+<h3>categories</h3>
+{% for row in cats %}
+	{{ row.title }}<br>
+{% endfor %}
+
+<br>
+
+<h3>items</h3>
+{% for row in items %}
+	{{ row.title }}<br>
+{% endfor %}
