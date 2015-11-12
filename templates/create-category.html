@@ -1,0 +1,10 @@
+create category template
+<br><br>
+{% if message %}
+	{{ message }}
+{% endif %}
+
+<form action="/create-category" method="post">
+	<input type="text" name="title">
+	<button type="submit" name="submit">Submit</button>
+</form>
