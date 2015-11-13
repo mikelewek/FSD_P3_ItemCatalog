@@ -39,13 +39,10 @@ def create_category():
 
 
 # edit category
-@app.route('/edit-category', methods=['POST', 'GET'])
-def edit_category():
+@app.route('/edit-category/<int:id>', methods=['POST', 'GET'])
+def edit_category(id):
     message = ''
-    cat = ''
-
-    if request.method == 'GET':
-        cat = query('cats', request.args.get('id'))
+    cat = query('cats', id)
 
     if request.method == 'POST':
         cat = Category(title=request.form['title'])
@@ -76,14 +73,11 @@ def create_item():
 
 
 # edit item
-@app.route('/edit-item', methods=['POST', 'GET'])
-def edit_item():
+@app.route('/edit-item/<int:id>', methods=['POST', 'GET'])
+def edit_item(id):
     cats = query('cats')
-    items = ''
+    items = query('items', id)
     message = ''
-
-    if request.method == 'GET':
-        items = query('items', request.args.get('id'))
 
     if request.method == 'POST':
         item = Item(title=request.form['title'],

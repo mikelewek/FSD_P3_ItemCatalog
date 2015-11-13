@@ -5,7 +5,7 @@ edit category template
 {% endif %}
 
 {% for row in cat %}
-<form action="/edit-category" method="post">
+<form action="/edit-category/{{ row.id }}" method="post">
 	<input type="text" name="title" value="{{ row.title }}">
 	<button type="submit" name="submit">Submit</button>
 </form>

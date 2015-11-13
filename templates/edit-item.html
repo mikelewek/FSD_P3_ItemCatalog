@@ -5,7 +5,7 @@ edit item template
 {% endif %}
 
 {% for row in items %}
-<form action="/edit-item" method="post">
+<form action="/edit-item/{{ row.id }}" method="post">
     <input type="hidden" name="id" value="{{ row.id }}">
 	<input type="text" name="title" value="{{ row.title }}">
 	<input type="text" name="description" value="{{ row.description }}">
