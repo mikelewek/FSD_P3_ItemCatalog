@@ -1,0 +1,23 @@
+edit item template
+<br><br>
+{% if message %}
+	{{ message }}
+{% endif %}
+
+{% for row in items %}
+<form action="/edit-item" method="post">
+    <input type="hidden" name="id" value="{{ row.id }}">
+	<input type="text" name="title" value="{{ row.title }}">
+	<input type="text" name="description" value="{{ row.description }}">
+    <select name="category_id">
+        {% for cats in categories %}
+            {% if cats.id == row.category_id %}
+                <option value="{{ cats.id }}" selected>{{ cats.title }}</option>
+            {% else %}
+                <option value="{{ cats.id }}">{{ cats.title }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+	<button type="submit" name="submit">Submit</button>
+</form>
+{% endfor %}

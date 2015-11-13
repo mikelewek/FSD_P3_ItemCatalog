@@ -1,0 +1,12 @@
+edit category template
+<br><br>
+{% if message %}
+	{{ message }}
+{% endif %}
+
+{% for row in cat %}
+<form action="/edit-category" method="post">
+	<input type="text" name="title" value="{{ row.title }}">
+	<button type="submit" name="submit">Submit</button>
+</form>
+{% endfor %}
