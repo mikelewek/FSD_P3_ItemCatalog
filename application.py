@@ -22,7 +22,9 @@ def home():
     # url_for('css', filename = 'style.css')
     categories = query('cats', False)
     items = query('items', False)
-    return render_template('index.html', cats=categories, items=items)
+    return render_template('index.html',
+                           cats=categories,
+                           items=items)
 
 
 # create category
