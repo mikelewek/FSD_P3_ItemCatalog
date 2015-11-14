@@ -56,6 +56,14 @@ def edit_category(id):
                            message=message)
 
 
+# delete item
+@app.route('/delete-category/<int:id>', methods=['POST', 'GET'])
+def delete_category(id):
+    delete = query('cats', id, True)
+    return render_template("edit-category.html",
+                           message=delete)
+
+
 # create item
 @app.route('/create-item', methods=['POST', 'GET'])
 def create_item():
@@ -94,18 +102,35 @@ def edit_item(id):
                            message=message)
 
 
+# delete item
+@app.route('/delete-item/<int:id>', methods=['POST', 'GET'])
+def delete_item(id):
+    delete = query('items', id, True)
+    return render_template("edit-item.html",
+                           message=delete)
+
+
+
 # query db for items or categories
-def query(table, qid=False):
+def query(table, qid=False, delete=False):
     result = ''
 
+    # category db queries
     if table == 'cats':
-        if qid is not False:
+        if delete is not False:
+            #delete query here
+            result = 'cat ' + qid + ' deleted successfully'
+        elif qid is not False:
             result = session.query(Category).filter_by(id=qid)
         else:
             result = session.query(Category).all()
 
+    # items db queries
     if table == 'items':
-        if qid is not False:
+        if delete is not False:
+            #delete query here
+            result = 'item ' + qid + ' deleted successfully'
+        elif qid is not False:
             result = session.query(Item).filter_by(id=qid)
         else:
             result = session.query(Item).all()
