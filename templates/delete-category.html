@@ -3,3 +3,8 @@ delete category template
 {% if message %}
 	{{ message }}
 {% endif %}
+
+<form action="/delete-category/{{ id }}" method="post">
+	<input type="text" name="id" value="{{ id }}">
+	<button type="submit" name="submit">Submit</button>
+</form>

@@ -59,9 +59,13 @@ def edit_category(id):
 # delete item
 @app.route('/delete-category/<int:id>', methods=['POST', 'GET'])
 def delete_category(id):
-    delete = query('cats', id, True)
-    return render_template("edit-category.html",
-                           message=delete)
+    message = 'Warning! Pressing Submit will permanently delete the catogory!'
+
+    if request.method == 'POST':
+        message = query('cats', id, True)
+    return render_template("delete-category.html",
+                           id=id,
+                           message=message)
 
 
 # create item
@@ -105,9 +109,13 @@ def edit_item(id):
 # delete item
 @app.route('/delete-item/<int:id>', methods=['POST', 'GET'])
 def delete_item(id):
-    delete = query('items', id, True)
-    return render_template("edit-item.html",
-                           message=delete)
+    message = 'Warning! Pressing Submit will permanently delete the catogory!'
+
+    if request.method == 'POST':
+        message = query('items', id, True)
+    return render_template("delete-item.html",
+                           id=id,
+                           message=message)
 
 
 
