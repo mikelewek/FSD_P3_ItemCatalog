@@ -1,10 +1,13 @@
-create category template
-<br><br>
-{% if message %}
-	{{ message }}
-{% endif %}
+{% extends "base.html" %}
+{% block content %}
+	<h1>Create Category</h1>
+	<br><br>
+	{% if message %}
+		{{ message }}
+	{% endif %}
 
-<form action="/create-category" method="post">
-	<input type="text" name="title">
-	<button type="submit" name="submit">Submit</button>
-</form>
+	<form action="/catalog/category/create" method="post">
+		<input type="text" name="title">
+		<button type="submit" name="submit">Submit</button>
+	</form>
+{% endblock %}

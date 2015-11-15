@@ -1,14 +1,16 @@
-home template
-<br><br>
+{% extends "base.html" %}
+{% block content %}
+    <h1>Home</h1>
 
-<h3>categories</h3>
-{% for row in cats %}
-	{{ row.title }}<br>
-{% endfor %}
+    <h3>categories</h3>
+    {% for row in cats %}
+        {{ row.title }}<br>
+    {% endfor %}
 
-<br>
-
-<h3>items</h3>
-{% for row in items %}
-	{{ row.title }}<br>
-{% endfor %}
+    <h3>items</h3>
+    {% for row in items %}
+        {{ row.id }}<br>
+        {{ row.title }}<br>
+        {{ row.description }}<br>
+    {% endfor %}
+{% endblock %}

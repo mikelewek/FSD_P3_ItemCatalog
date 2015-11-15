@@ -18,17 +18,23 @@ session = Session()
 # homepage - displays categories and associated items
 @app.route('/')
 def home():
-    # im not sure where this should go
-    # url_for('css', filename = 'style.css')
-    categories = query('cats', False)
-    items = query('items', False)
+    # get all category and items
+    categories = session.query(Category).all()
+    items = session.query(Item).all()
     return render_template('index.html',
                            cats=categories,
                            items=items)
 
 
+# catalog JSON endpoint
+@app.route('/catalog.json', methods=['POST', 'GET'])
+def catalog_json():
+    json = ''
+    return render_template("create-category.html", json=json)
+
+
 # create category
-@app.route('/create-category', methods=['POST', 'GET'])
+@app.route('/catalog/category/create', methods=['POST', 'GET'])
 def create_category():
     message = 'No data for db insert'
 
@@ -41,38 +47,52 @@ def create_category():
 
 
 # edit category
-@app.route('/edit-category/<int:id>', methods=['POST', 'GET'])
-def edit_category(id):
+@app.route('/catalog/category/<title>/edit', methods=['POST', 'GET'])
+def edit_category(title):
     message = ''
-    cat = query('cats', id)
+    # get item by query string title
+    cat = session.query(Category).filter_by(title=title)
 
+    # update item in db when form is submitted
     if request.method == 'POST':
-        cat = Category(title=request.form['title'])
+        title = request.form['title']
+        cat = Category(title=title)
         session.add(cat)
         session.commit()
         message = 'Category updated successfully'
     return render_template("edit-category.html",
+                           title=title,
                            cat=cat,
                            message=message)
 
 
-# delete item
-@app.route('/delete-category/<int:id>', methods=['POST', 'GET'])
-def delete_category(id):
+# delete category
+@app.route('/catalog/<title>/delete', methods=['POST', 'GET'])
+def delete_category(title):
     message = 'Warning! Pressing Submit will permanently delete the catogory!'
 
     if request.method == 'POST':
-        message = query('cats', id, True)
+        message = ''
     return render_template("delete-category.html",
-                           id=id,
+                           title=title,
                            message=message)
 
 
+# display category items
+@app.route('/catalog/category/<title>/items', methods=['POST', 'GET'])
+def show_items(title):
+    items = session.query(Category.id, Item.title, Item.description).\
+                join(Item).\
+                filter(Category.title == title)
+    return render_template("show-category.html",
+                           items=items)
+
+
 # create item
-@app.route('/create-item', methods=['POST', 'GET'])
-def create_item():
+@app.route('/catalog/<title>/create', methods=['POST', 'GET'])
+def create_item(title):
     message = 'No data for db insert'
-    cats = query('cats')
+    cats = session.query(Category).all()
 
     if request.method == 'POST':
         item = Item(title=request.form['title'],
@@ -82,23 +102,24 @@ def create_item():
         session.commit()
         message = 'Item was inserted into db'
     return render_template("create-item.html",
+                           title=title,
                            categories=cats,
                            message=message)
 
 
 # edit item
-@app.route('/edit-item/<int:id>', methods=['POST', 'GET'])
-def edit_item(id):
-    cats = query('cats')
-    items = query('items', id)
+@app.route('/catalog/<qid>/edit', methods=['POST', 'GET'])
+def edit_item(qid):
+    cats = session.query(Category).all()
+    items = session.query(Item).filter_by(id=qid)
     message = ''
 
     if request.method == 'POST':
-        item = Item(title=request.form['title'],
-                    description=request.form['description'],
-                    category_id=request.form['category_id'])
-        session.add(item)
-        session.commit()
+        session.query(Item).\
+            filter(Item.id == request.form['id']).\
+            update({'title': request.form['title'],
+                    'description': request.form['description'],
+                    'category_id': request.form['category_id']})
         message = 'Item successfully updated'
     return render_template("edit-item.html",
                            items=items,
@@ -107,43 +128,15 @@ def edit_item(id):
 
 
 # delete item
-@app.route('/delete-item/<int:id>', methods=['POST', 'GET'])
-def delete_item(id):
+@app.route('/catalog/<category>/<title>/delete', methods=['POST', 'GET'])
+def delete_item(title):
     message = 'Warning! Pressing Submit will permanently delete the catogory!'
 
     if request.method == 'POST':
-        message = query('items', id, True)
+        message = ''
     return render_template("delete-item.html",
-                           id=id,
+                           title=title,
                            message=message)
-
-
-
-# query db for items or categories
-def query(table, qid=False, delete=False):
-    result = ''
-
-    # category db queries
-    if table == 'cats':
-        if delete is not False:
-            #delete query here
-            result = 'cat ' + qid + ' deleted successfully'
-        elif qid is not False:
-            result = session.query(Category).filter_by(id=qid)
-        else:
-            result = session.query(Category).all()
-
-    # items db queries
-    if table == 'items':
-        if delete is not False:
-            #delete query here
-            result = 'item ' + qid + ' deleted successfully'
-        elif qid is not False:
-            result = session.query(Item).filter_by(id=qid)
-        else:
-            result = session.query(Item).all()
-
-    return result
 
 
 # login

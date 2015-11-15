@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+    show category items template
+    <br><br>
+
+    {% for row in items %}
+	    {{ row.title }}<br>
+        {{ row.description }}<br>
+    {% endfor %}
+{% endblock %}
