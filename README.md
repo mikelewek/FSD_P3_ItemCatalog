@@ -1,8 +1,8 @@
 Catalog App. - FSD Project 3
 ---------------------------
 <p>This application uses CRUD to display, create, update, and delete catalog categories and associated items.</p>
-<p>Google OAuth is used to authenticate users: <code>/login</p></code>
-<p>A JSON endpoint is available for catalog/item data at: <code>/catalog.json</p></code>
+<p>Google OAuth is used to authenticate users: <code>/login</code></p>
+<p>A JSON endpoint is available for catalog/item data at: <code>/catalog.json</code></p>
 
 
 The Repo. Contains the Following Files
