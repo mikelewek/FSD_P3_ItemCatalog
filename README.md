@@ -18,7 +18,8 @@ How to Run the Application
 <p>Python 2.7, PostgreSQL, and requests_oathlib must be installed and configured.</p>
 <p>In the terminal, clone the repo., then navigate to the directory where the files are located.</p>
 <p>The catalog database can be re-built by running the database_setup.py file, otherwise existing data will be consumed from catalog.db</p>
-<p>Running application.py will start the server, then you will be able to visit the website at <code>http:localhost:8000</code></p>
+<p>Running application.py will start the server, then you will be able to visit the website at:</p>
+<p><code>http:\\localhost:8000</code></p>
 
 <pre>
     <code>$ pip install requests requests_oauthlib</code>
