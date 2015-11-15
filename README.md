@@ -10,7 +10,7 @@ The Repo. Contains the Following Files
  1. application.py - Contains routing and functionality.<br>
  2. database_setup.py - Contains database class to generate catalog.db - Will overwrite catalog.db with a blank version if db exists prior to running the script.<br>
  3. catalog.db - Database for project.<br>
- 4. Files in templates directory - Contains Jinja1 page templates.<br>
+ 4. Files in templates directory - Contains Jinja2 page templates.<br>
  5. static/css/style.less - Contains Less CSS for template styling.<br>
  6. README.md
 
