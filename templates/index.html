@@ -1,16 +1,21 @@
 {% extends "base.html" %}
+{% set bodyClass = 'home' %}
+
 {% block content %}
-    <h1>Home</h1>
-
-    <h3>categories</h3>
-    {% for row in cats %}
-        {{ row.title }}<br>
-    {% endfor %}
-
-    <h3>items</h3>
-    {% for row in items %}
-        {{ row.id }}<br>
-        {{ row.title }}<br>
-        {{ row.description }}<br>
-    {% endfor %}
+    <div class="category-list col-md-3">
+    <h3>Categories</h3>
+        <ul>
+        {% for row in cats %}
+            <li>{{ row.title }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="item-list col-md-9">
+        <h3>Recent Items</h3>
+        <ul>
+        {% for row in items %}
+            <li>{{ row.title }}</li>
+        {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
