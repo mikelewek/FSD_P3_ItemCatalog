@@ -1,5 +1,6 @@
 from requests_oauthlib import OAuth2Session
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, flash, render_template, request, \
+    redirect, session, url_for, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Item, Category
@@ -13,20 +14,20 @@ Base.metadata.bind = engine
 
 # create session
 Session = sessionmaker(bind=engine)
-session = Session()
+dbSession = Session()
 
 
 # This information is obtained upon registration of a new GitHub OAuth
 # application here: https://github.com/settings/applications/new
-client_id = "<your client key>"
-client_secret = "<your client secret>"
+client_id = 'xxx'
+client_secret = 'xxx'
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
 
-@app.route("/demo")
-def demo():
-    """Step 1: User Authorization.
+@app.route("/login")
+def login():
+    """ User Authorization.
 
     Redirect the user/resource owner to the OAuth provider (i.e. Github)
     using an URL with a few key OAuth parameters.
@@ -42,7 +43,7 @@ def demo():
 # Step 2: User authorization, this happens on the provider.
 @app.route("/callback", methods=["GET"])
 def callback():
-    """ Step 3: Retrieving an access token.
+    """ Retrieving an access token.
 
     The user has been redirected back from the provider to your registered
     callback URL. With this redirection comes an authorization code included
@@ -53,31 +54,38 @@ def callback():
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
 
-    # At this point you can fetch protected resources but lets save
-    # the token and show how this is done from a persisted token
-    # in /profile.
     session['oauth_token'] = token
-
-    return redirect(url_for('.profile'))
-
-
-@app.route("/profile", methods=["GET"])
-def profile():
-    """Fetching a protected resource using an OAuth 2 token.
-    """
-    github = OAuth2Session(client_id, token=session['oauth_token'])
-    return jsonify(github.get('https://api.github.com/user').json())
+    return redirect(url_for('home', message="You have successfully logged in."))
 
 
-# homepage - displays categories and associated items
-@app.route('/')
+# check if user is authenticated
+def is_auth():
+    authenticated = False
+    try:
+        if session['oauth_token']:
+            authenticated = True
+    except KeyError:
+        authenticated = False
+    return authenticated
+
+
+# homepage displays categories and associated items
+@app.route('/', methods=['POST', 'GET'])
 def home():
+    auth = is_auth()
+    message = ''
+
+    if request.method == 'GET':
+        message = request.args.get('message')
+
     # get all category and items
-    categories = session.query(Category).all()
-    items = session.query(Item).limit(10)
+    categories = dbSession.query(Category).all()
+    items = dbSession.query(Item).limit(10)
     return render_template('index.html',
                            cats=categories,
-                           items=items)
+                           items=items,
+                           message=message,
+                           loggedIn=auth)
 
 
 # catalog JSON endpoint
@@ -87,32 +95,42 @@ def catalog_json():
     return render_template("create-category.html", json=json)
 
 
-# create category
 @app.route('/catalog/category/create', methods=['POST', 'GET'])
 def create_category():
-    message = 'No data for db insert'
+    """ create category
 
-    if request.method == 'POST':
+    Check if user is logged in and show form. If user is not
+    logged in, redirect to home and display message. When
+    data is submitted, add object to database.
+    """
+    auth = is_auth()
+    message = ''
+    if is_auth() is not True:
+        return redirect(url_for('home', message="You must be logged-in to that page!"))
+
+    if request.method == 'POST' and is_auth() == True:
         cat = Category(title=request.form['title'])
-        session.add(cat)
-        session.commit()
+        dbSession.add(cat)
+        dbSession.commit()
         message = 'Category was inserted into db'
-    return render_template("create-category.html", message=message)
+    return render_template("create-category.html",
+                           message=message,
+                           loggedIn=auth)
 
 
 # edit category
-@app.route('/catalog/category/<title>/edit', methods=['POST', 'GET'])
-def edit_category(title):
+@app.route('/catalog/category/<qid>/edit', methods=['POST', 'GET'])
+def edit_category(qid):
     message = ''
-    # get item by query string title
-    cat = session.query(Category).filter_by(title=title)
+    # get item by query string id
+    cat = dbSession.query(Category).filter_by(id=qid)
 
     # update item in db when form is submitted
     if request.method == 'POST':
         title = request.form['title']
-        cat = Category(title=title)
-        session.add(cat)
-        session.commit()
+        cat = Category(id=qid)
+        dbSession.add(cat)
+        dbSession.commit()
         message = 'Category updated successfully'
     return render_template("edit-category.html",
                            title=title,
@@ -121,55 +139,77 @@ def edit_category(title):
 
 
 # delete category
-@app.route('/catalog/<title>/delete', methods=['POST', 'GET'])
-def delete_category(title):
-    message = 'Warning! Pressing Submit will permanently delete the catogory!'
+@app.route('/catalog/<int:qid>/delete', methods=['POST', 'GET'])
+def delete_category(qid):
+    message = 'Warning! Pressing Submit will permanently delete the category!'
 
     if request.method == 'POST':
         message = ''
     return render_template("delete-category.html",
-                           title=title,
+                           id=qid,
                            message=message)
 
 
 # display category items
-@app.route('/catalog/category/<title>/items', methods=['POST', 'GET'])
-def show_items(title):
-    items = session.query(Category.id, Item.title, Item.description).\
+@app.route('/catalog/category/<int:qid>/items', methods=['POST', 'GET'])
+def show_items(qid):
+    items = dbSession.query(Category.id, Item.title, Item.description).\
                 join(Item).\
-                filter(Category.title == title)
+                filter(Category.id == qid)
     return render_template("show-category.html",
                            items=items)
 
 
+# display individual item
+@app.route('/catalog/item/<int:qid>', methods=['POST', 'GET'])
+def show_item(qid):
+    auth = is_auth()
+    item = dbSession.query(Item.id, Item.title, Item.description).filter_by(id=qid)
+    return render_template("show-item.html",
+                           item=item,
+                           loggedIn=auth)
+
+
 # create item
-@app.route('/catalog/<title>/create', methods=['POST', 'GET'])
-def create_item(title):
-    message = 'No data for db insert'
-    cats = session.query(Category).all()
+@app.route('/catalog/item/create', methods=['POST', 'GET'])
+def create_item():
+    """ create item
+
+    Check if user is logged in and show form. If user is not
+    logged in, redirect to home and display message. When
+    data is submitted, add object to database.
+    """
+    auth = is_auth()
+    message = ''
+    if is_auth() is not True:
+        return redirect(url_for('home', message="You must be logged-in to that page!"))
+    cats = dbSession.query(Category).all()
 
     if request.method == 'POST':
         item = Item(title=request.form['title'],
                     description=request.form['description'],
                     category_id=request.form['category_id'])
-        session.add(item)
-        session.commit()
+        dbSession.add(item)
+        dbSession.commit()
         message = 'Item was inserted into db'
     return render_template("create-item.html",
-                           title=title,
                            categories=cats,
-                           message=message)
+                           message=message,
+                           loggedIn=auth)
 
 
 # edit item
-@app.route('/catalog/<qid>/edit', methods=['POST', 'GET'])
+@app.route('/catalog/item/<int:qid>/edit', methods=['POST', 'GET'])
 def edit_item(qid):
-    cats = session.query(Category).all()
-    items = session.query(Item).filter_by(id=qid)
+    auth = is_auth()
+    if is_auth() is not True:
+        return redirect(url_for('home', message="You must be logged-in to that page!"))
+    cats = dbSession.query(Category).all()
+    items = dbSession.query(Item).filter_by(id=qid)
     message = ''
 
     if request.method == 'POST':
-        session.query(Item).\
+        dbSession.query(Item).\
             filter(Item.id == request.form['id']).\
             update({'title': request.form['title'],
                     'description': request.form['description'],
@@ -178,50 +218,27 @@ def edit_item(qid):
     return render_template("edit-item.html",
                            items=items,
                            categories=cats,
-                           message=message)
+                           message=message,
+                           loggedIn=auth)
 
 
 # delete item
-@app.route('/catalog/<category>/<title>/delete', methods=['POST', 'GET'])
-def delete_item(title):
-    message = 'Warning! Pressing Submit will permanently delete the catogory!'
-
+@app.route('/catalog/item/<int:qid>/delete', methods=['POST', 'GET'])
+def delete_item(qid):
+    auth = is_auth()
+    if is_auth() is not True:
+        return redirect(url_for('home', message="You must be logged-in to that page!"))
+    message = 'Warning! Pressing Submit will permanently delete the item!'
+    item = dbSession.query(Item.id, Item.title).filter_by(id=qid)
     if request.method == 'POST':
         message = ''
     return render_template("delete-item.html",
-                           title=title,
-                           message=message)
-
-
-# login
-def valid_login(username, password):
-    return True
-
-
-# log user
-def log_the_user_in(username):
-    return username
-
-
-# login page shows form and checks users credentials
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    error = None
-    if request.method == 'POST':
-        # if request.method == 'POST':
-        #   do_the_login()
-        # else:
-        # show_the_login_form()
-        if valid_login(request.form['username'],
-                       request.form['password']):
-            return log_the_user_in(request.form['username'])
-        else:
-            error = 'Invalid username/password'
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
-    return render_template('login.html', error=error)
+                           item=item,
+                           message=message,
+                           loggedIn=auth)
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     app.secret_key = os.urandom(24)
+    app.run(host='0.0.0.0', port=8000, debug=True)
