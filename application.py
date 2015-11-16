@@ -19,8 +19,8 @@ dbSession = Session()
 
 # This information is obtained upon registration of a new GitHub OAuth
 # application here: https://github.com/settings/applications/new
-client_id = 'xxx'
-client_secret = 'xxx'
+client_id = '62971eea1ed1b0e68e82'
+client_secret = 'a5a4dd91f3102ca1124e3c6e9bca0aa7387843a0'
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
