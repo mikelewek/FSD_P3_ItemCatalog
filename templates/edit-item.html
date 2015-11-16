@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Edit Item</h1>
-    <br><br>
+
     {% if message %}
-        {{ message }}
+        <div class="alert alert-success">{{ message }}</div>
     {% endif %}
 
     {% for row in items %}
-    <form action="/catalog/{{ row.id }}/edit" method="post">
+    <h1>Edit {{ row.title }}</h1>
+    <form action="/catalog/item/{{ row.id }}/edit" method="post">
         <input type="hidden" name="id" value="{{ row.id }}">
         <input type="text" name="title" value="{{ row.title }}">
         <input type="text" name="description" value="{{ row.description }}">

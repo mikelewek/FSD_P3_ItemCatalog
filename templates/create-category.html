@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 	<h1>Create Category</h1>
-	<br><br>
+
 	{% if message %}
-		{{ message }}
+		<div class="alert alert-success">{{ message }}</div>
 	{% endif %}
 
 	<form action="/catalog/category/create" method="post">

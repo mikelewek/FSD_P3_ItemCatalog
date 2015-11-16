@@ -4,7 +4,7 @@
     {% block head %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css" />
     <link rel="stylesheet/less" href="{{ url_for('static',filename='style.less') }}" />
-    <title>{% block title %}{% endblock %} - My Webpage</title>
+    <title>Catalog App.</title>
     {% endblock %}
 </head>
 <body {% if bodyClass %}class="{{ bodyClass }}"{% endif %}>
@@ -12,7 +12,7 @@
       <a class="navbar-brand" href="/">Catalog App.</a>
       <ul class="nav nav-pills">
         <li class="nav-item navbar-right">
-          <a class="nav-link" href="/login">Login</a>
+            {% if loggedIn != True %}<a class="nav-link" title="Login" href="/login">Login</a>{% endif %}
         </li>
       </ul>
     </nav>

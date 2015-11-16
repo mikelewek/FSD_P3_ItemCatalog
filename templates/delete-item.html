@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-	<h1>Delete Item</h1>
-	<br><br>
-	{% if message %}
-		{{ message }}
-	{% endif %}
 
-	<form action="/catalog/{{ title }}/delete" method="post">
-		<input type="text" name="title" value="{{ id }}">
-		<button type="submit" name="submit">Submit</button>
-	</form>
+	{% for row in item %}
+		<h1>Delete {{ row.title }}</h1>
+		{% if message %}
+			<div class="alert alert-success">{{ message }}</div>
+		{% endif %}
+
+		<form action="/catalog/item/{{ row.id }}/delete" method="post">
+			<input type="text" name="title" value="{{ row.id }}">
+			<button type="submit" name="submit">Submit</button>
+		</form>
+	{% endfor %}
 {% endblock %}
