@@ -19,8 +19,8 @@ dbSession = Session()
 
 # This information is obtained upon registration of a new GitHub OAuth
 # application here: https://github.com/settings/applications/new
-client_id = 'xx'
-client_secret = 'xx'
+client_id = '47447b76a19de415deda'
+client_secret = '535929efe072ba5c9ff3c9de0f29fa74c6f136f0'
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
@@ -91,8 +91,16 @@ def home():
 # catalog JSON endpoint
 @app.route('/catalog.json', methods=['POST', 'GET'])
 def catalog_json():
-    json = ''
-    return render_template("create-category.html", json=json)
+    list = []
+    items = dbSession.query(Item).all()
+    for item in items:
+        list.append({'id': item.id,
+                     'category_id': item.category.id,
+                     'category_title': item.category.title,
+                     'title': item.title,
+                     'description': item.description,
+                     })
+    return jsonify({"items": list})
 
 
 @app.route('/catalog/category/create', methods=['POST', 'GET'])
