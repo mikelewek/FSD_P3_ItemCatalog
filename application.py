@@ -89,7 +89,7 @@ def home():
 
 
 # catalog JSON endpoint
-@app.route('/catalog.json', methods=['POST', 'GET'])
+@app.route('/catalog.json')
 def catalog_json():
     list = []
     items = dbSession.query(Item).all()
