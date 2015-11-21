@@ -23,7 +23,8 @@ How to Run the Application
 <p>The catalog database can be re-built by running the database_setup.py file, otherwise existing data will be consumed from catalog.db</p>
 <p>Running application.py will start the server, then you will be able to visit the website at:</p>
 <p><code>http://localhost:8000</code></p>
-
+<br>
+<p>After clicking the Login link, you will be required to authenticate through GitHub. This will allow you to create, edit, and delete Categories and Items.</p>
 <pre>
     <code>$ pip install requests requests_oauthlib</code>
     <code>$ pip install Flask-Login</code>
