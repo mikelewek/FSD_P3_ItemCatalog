@@ -36,3 +36,4 @@ How to Run the Application
 
 <br>
 <p>Requests-OAuthlib used for GitHub OAuth: <a href="http://requests-oauthlib.readthedocs.org/en/latest/index.html" target="_blank">Requests-OAuthlib</a></p>
+<p>If the user is not authorized and attempts to visit a restricted page (create, update, or delete categories or items), the user will be redirected back to the homepage.</p>
