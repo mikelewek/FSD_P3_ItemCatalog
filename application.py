@@ -55,7 +55,8 @@ def callback():
                                authorization_response=request.url)
 
     session['oauth_token'] = token
-    return redirect(url_for('home', message="You have successfully logged in."))
+    return redirect(url_for('home', message="You have successfully "
+                                            "logged in."))
 
 
 # check if user is authenticated
@@ -131,7 +132,8 @@ def create_category():
     auth = is_auth()
     message = ''
     if auth is not True:
-        return redirect(url_for('home', message="You must be logged-in to that page!"))
+        return redirect(url_for('home', message="You must be "
+                                                "logged-in to that page!"))
 
     if request.method == 'POST' and is_auth() == True:
         if request.form['title']:
@@ -171,7 +173,8 @@ def edit_category(qid):
 def delete_category(qid):
     auth = is_auth()
     if auth is not True:
-        return redirect(url_for('home', message="You must be logged-in to that page!"))
+        return redirect(url_for('home', message="You must be "
+                                                "logged-in to that page!"))
     message = 'Warning! Pressing Submit will permanently delete the category!'
     cat = dbSession.query(Category).filter_by(id=qid)
 
@@ -202,7 +205,8 @@ def show_items(qid):
 @app.route('/catalog/item/<int:qid>', methods=['POST', 'GET'])
 def show_item(qid):
     auth = is_auth()
-    item = dbSession.query(Item.id, Item.title, Item.description).filter_by(id=qid)
+    item = dbSession.query(Item.id, Item.title, Item.description)\
+        .filter_by(id=qid)
     return render_template("show-item.html",
                            item=item,
                            loggedIn=auth)
@@ -220,7 +224,8 @@ def create_item():
     auth = is_auth()
     message = ''
     if is_auth() is not True:
-        return redirect(url_for('home', message="You must be logged-in to that page!"))
+        return redirect(url_for('home', message="You must be logged-in "
+                                                "to that page!"))
     cats = dbSession.query(Category).all()
 
     # display message if no categories have been created to
@@ -252,7 +257,8 @@ def create_item():
 def edit_item(qid):
     auth = is_auth()
     if auth is not True:
-        return redirect(url_for('home', message="You must be logged-in to that page!"))
+        return redirect(url_for('home', message="You must be logged-in "
+                                                "to that page!"))
     cats = dbSession.query(Category).all()
     items = dbSession.query(Item).filter_by(id=qid)
     message = ''
@@ -276,9 +282,11 @@ def edit_item(qid):
 def delete_item(qid):
     auth = is_auth()
     if is_auth() is not True:
-        return redirect(url_for('home', message="You must be logged-in to that page!"))
+        return redirect(url_for('home', message="You must be logged-in "
+                                                "to that page!"))
     message = 'Warning! Pressing Submit will permanently delete the item!'
-    item = dbSession.query(Item.id, Item.title, Item.description).filter_by(id=qid)
+    item = dbSession.query(Item.id, Item.title, Item.description)\
+        .filter_by(id=qid)
 
     if request.method == 'POST':
         message = 'Item Deleted.'
