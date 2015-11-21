@@ -22,5 +22,6 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship('Category')
 
+
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.create_all(engine)

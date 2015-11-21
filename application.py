@@ -96,15 +96,28 @@ def home():
 @app.route('/catalog.json')
 def catalog_json():
     list = []
-    items = dbSession.query(Item).all()
-    for item in items:
-        list.append({'id': item.id,
-                     'category_id': item.category.id,
-                     'category_title': item.category.title,
-                     'title': item.title,
-                     'description': item.description,
+    item_list = []
+    cats = dbSession.query(Category).all()
+
+    for cat in cats:
+        list.append({'id': cat.id,
+                     'category_title': cat.title,
+                     'items':
+                         item_query(cat.id)
                      })
-    return jsonify({"items": list})
+    return jsonify({"Catalog": list})
+
+
+def item_query(cat_id):
+    list = []
+    items = dbSession.query(Item).filter_by(category_id=cat_id)
+    for item in items:
+        list.append({
+            'id': item.id,
+            'title': item.title,
+            'description': item.description
+        })
+    return list
 
 
 @app.route('/catalog/category/create', methods=['POST', 'GET'])
