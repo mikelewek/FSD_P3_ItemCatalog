@@ -169,8 +169,7 @@ def delete_category(qid):
 # display category with items
 @app.route('/catalog/category/<int:qid>/items', methods=['POST', 'GET'])
 def show_items(qid):
-    items = dbSession.query(Category.title.label('cat_title'), Category.id, Item.title.label('item_title'),
-                            Item.description).join(Item).filter(Category.id == qid)
+    items = dbSession.query(Category.title.label("cat_title"), Item.title, Item.description).join(Item).filter(Category.id == qid)
     return render_template("show-category.html",
                            items=items)
 

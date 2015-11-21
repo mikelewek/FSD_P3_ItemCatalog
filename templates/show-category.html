@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>abc{{ items.cat_title }}</h1>
-    <h4>Items</h4>
     {% for row in items %}
-        <p>{{ row.item_title }} <br>{{ row.description }}</p>
+        <h1>{{ row.cat_title }}</h1>
+    {% endfor %}
+    {% for row in items %}
+    <div class="item">
+        {{ row.title }}
+        <br>
+        {{ row.description }}
+    </div>
     {% endfor %}
 {% endblock %}
