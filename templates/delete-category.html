@@ -5,8 +5,10 @@
         <div class="alert alert-success">{{ message }}</div>
     {% endif %}
 
-    <form action="/catalog/{{ title }}/delete" method="post">
-        <input type="text" name="title" value="{{ title }}">
-        <button type="submit" name="submit">Submit</button>
-    </form>
+    {% for row in cat %}
+        <form action="/catalog/category/{{ row.id }}/delete" method="post">
+            <p><b>Category:</b> {{ row.title }}</p>
+            <button type="submit" name="submit">Submit</button>
+        </form>
+    {% endfor %}
 {% endblock %}

@@ -20,7 +20,7 @@ dbSession = Session()
 # This information is obtained upon registration of a new GitHub OAuth
 # application here: https://github.com/settings/applications/new
 client_id = '47447b76a19de415deda'
-client_secret = '6554565298fa64c7e8d9034626d09b4b580ba3cf'
+client_secret = ''
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
@@ -117,7 +117,7 @@ def create_category():
     """
     auth = is_auth()
     message = ''
-    if is_auth() is not True:
+    if auth is not True:
         return redirect(url_for('home', message="You must be logged-in to that page!"))
 
     if request.method == 'POST' and is_auth() == True:
@@ -153,13 +153,21 @@ def edit_category(qid):
 # delete category
 @app.route('/catalog/category/<int:qid>/delete', methods=['POST', 'GET'])
 def delete_category(qid):
+    auth = is_auth()
+    if auth is not True:
+        return redirect(url_for('home', message="You must be logged-in to that page!"))
     message = 'Warning! Pressing Submit will permanently delete the category!'
+    cat = dbSession.query(Category).filter_by(id=qid)
 
     if request.method == 'POST':
-        message = ''
+        message = 'Category Deleted.'
+        cat_del = dbSession.query(Category).filter_by(id=qid).first()
+        dbSession.delete(cat_del)
+        dbSession.commit()
     return render_template("delete-category.html",
-                           id=qid,
-                           message=message)
+                           cat=cat,
+                           message=message,
+                           loggedIn=auth)
 
 
 # display category with items
@@ -223,7 +231,7 @@ def create_item():
 @app.route('/catalog/item/<int:qid>/edit', methods=['POST', 'GET'])
 def edit_item(qid):
     auth = is_auth()
-    if is_auth() is not True:
+    if auth is not True:
         return redirect(url_for('home', message="You must be logged-in to that page!"))
     cats = dbSession.query(Category).all()
     items = dbSession.query(Item).filter_by(id=qid)
@@ -250,9 +258,13 @@ def delete_item(qid):
     if is_auth() is not True:
         return redirect(url_for('home', message="You must be logged-in to that page!"))
     message = 'Warning! Pressing Submit will permanently delete the item!'
-    item = dbSession.query(Item.id, Item.title, Item.description).filter_by(category_id=qid)
+    item = dbSession.query(Item.id, Item.title, Item.description).filter_by(id=qid)
+
     if request.method == 'POST':
-        message = ''
+        message = 'Item Deleted.'
+        item_del = dbSession.query(Item).filter_by(id=qid).first()
+        dbSession.delete(item_del)
+        dbSession.commit()
     return render_template("delete-item.html",
                            item=item,
                            message=message,

@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-
-	{% for row in item %}
-		<h1>Delete {{ row.title }}</h1>
-		{% if message %}
-			<div class="alert alert-success">{{ message }}</div>
-		{% endif %}
-
+    <h1>Delete Item</h1>
+    {% if message %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+    {% for row in item %}
 		<form action="/catalog/item/{{ row.id }}/delete" method="post">
 			<input type="hidden" name="id" value="{{ row.id }}">
 			<p><strong>Title:</strong> {{ row.title }}<br><strong>Description:</strong> {{ row.description }}</p>
