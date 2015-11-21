@@ -20,7 +20,7 @@ How to Run the Application
 <p>GitHub app. Homepage URL: <code>http://localhost:8000</code> 
 <p>Authorization Callback URL: <code>http://localhost:8000/callback</code></p>
 <p>In the terminal, clone the repo., then navigate to the directory where the files are located.</p>
-<p>The catalog database can be re-built by running the database_setup.py file, otherwise existing data will be consumed from catalog.db</p>
+<p>The catalog database can be built by running the database_setup.py file if the existing database (catalog.db) does not already exist.</p>
 <p>Running application.py will start the server, then you will be able to visit the website at:</p>
 <p><code>http://localhost:8000</code></p>
 <br>
