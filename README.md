@@ -29,6 +29,7 @@ How to Run the Application
     <code>$ pip install Flask-Login</code>
 	<code>$ git clone https://github.com/mikelewek/FSD_P3_ItemCatalog.git</code>
 	<code>$ cd FSD_P3_ItemCatalog</code>
+	<code>$ python database_setup.py</code>
 	<code>$ python application.py</code>
 </pre>
 
