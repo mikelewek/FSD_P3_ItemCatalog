@@ -11,15 +11,13 @@
     {% endif %}
     <h3>Categories</h3>
         <ul>
-        {% for row in items %}
-            {% if row.title != "No Categories found." %}
-            <li><a href="/catalog/category/{{ row.id }}/items">
-                {% endif %}
-                {{ row.title }}
-            {% if row.title != "No Items found." %}
-            </a></li>
-            {% endif %}
-       {% endfor %}
+        {% if cats is defined %}
+            {% for row in cats %}
+            <li><a href="/catalog/category/{{ row.id }}/items">{{ row.title }}</a></li>
+            {% endfor %}
+       {% else %}
+            <li>No Categories found.</li>
+       {% endif %}
         </ul>
     </div>
     <div class="item-list col-md-9">
@@ -28,15 +26,13 @@
         {% endif %}
         <h3>Recent Items</h3>
         <ul>
-        {% for row in items %}
-            {% if row.title != "No Items found." %}
-            <li><a href="/catalog/item/{{ row.id }}">
-                {% endif %}
-                {{ row.title }}
-            {% if row.title != "No Items found." %}
-            </a></li>
-            {% endif %}
-        {% endfor %}
+        {% if items is defined %}
+            {% for row in items %}
+                <li><a href="/catalog/item/{{ row.id }}">{{ row.title }}</a></li>
+            {% endfor %}
+        {% else %}
+            <li>No Items found.</li>
+        {% endif %}
         </ul>
     </div>
 {% endblock %}

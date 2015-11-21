@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-	<h1>Edit Category</h1>
-	<br><br>
-	{% if message %}
-		{{ message }}
-	{% endif %}
-	{{ cat.id }}
-	<form action="/catalog/category/{{ title }}/edit" method="post">
-		<input type="text" name="title" value="{{ cat.title }}">
-		<button type="submit" name="submit">Submit</button>
-	</form>
+
+    {% if message %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+
+    {% for row in cat %}
+    <h1>Edit {{ row.title }}</h1>
+    <form action="/catalog/category/{{ row.id }}/edit" method="post">
+        <input type="hidden" name="id" value="{{ row.id }}">
+        <input type="text" name="title" value="{{ row.title }}">
+        <button type="submit" name="submit">Submit</button>
+    </form>
+    {% endfor %}
 {% endblock %}

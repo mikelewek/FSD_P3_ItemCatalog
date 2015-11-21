@@ -8,7 +8,8 @@
 		{% endif %}
 
 		<form action="/catalog/item/{{ row.id }}/delete" method="post">
-			<input type="text" name="title" value="{{ row.id }}">
+			<input type="hidden" name="id" value="{{ row.id }}">
+			<p><strong>Title:</strong> {{ row.title }}<br><strong>Description:</strong> {{ row.description }}</p>
 			<button type="submit" name="submit">Submit</button>
 		</form>
 	{% endfor %}

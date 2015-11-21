@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for row in items %}
-        <h1>{{ row.cat_title }}</h1>
+    {% for row in category %}
+        <h1>{{ row.title }}</h1>
+        {% if loggedIn %}<div class="edit"><a href="/catalog/category/{{ row.id }}/edit">Edit</a> | <a href="/catalog/category/{{ row.id }}/delete">Delete</a></div>{% endif %}
     {% endfor %}
-    {% for row in items %}
-    <div class="item">
-        {{ row.title }}
-        <br>
-        {{ row.description }}
-    </div>
-    {% endfor %}
+    {% if items|length > 0 %}
+        {% for row in items %}
+        <div class="item">
+            {{ row.title }}
+            <br>
+            {{ row.description }}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No items found.</p>
+    {% endif %}
 {% endblock %}

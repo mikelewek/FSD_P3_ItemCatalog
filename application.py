@@ -19,8 +19,8 @@ dbSession = Session()
 
 # This information is obtained upon registration of a new GitHub OAuth
 # application here: https://github.com/settings/applications/new
-client_id = 'xx'
-client_secret = 'xx'
+client_id = '47447b76a19de415deda'
+client_secret = '6554565298fa64c7e8d9034626d09b4b580ba3cf'
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
@@ -83,11 +83,7 @@ def home():
     # get all category and items
     # or display no results found
     categories = dbSession.query(Category).all()
-    if len(categories) == 0:
-        categories = [{'title': 'No Categories found.'}]
-    items = dbSession.query(Category).all()
-    if len(items) == 0:
-        items = [{'title': 'No Items found.'}]
+    items = dbSession.query(Item).limit(10)
 
     return render_template('index.html',
                            cats=categories,
@@ -137,25 +133,25 @@ def create_category():
 # edit category
 @app.route('/catalog/category/<qid>/edit', methods=['POST', 'GET'])
 def edit_category(qid):
+    auth = is_auth()
     message = ''
     # get item by query string id
     cat = dbSession.query(Category).filter_by(id=qid)
 
     # update item in db when form is submitted
     if request.method == 'POST':
-        title = request.form['title']
-        cat = Category(id=qid)
-        dbSession.add(cat)
-        dbSession.commit()
+        dbSession.query(Category).\
+            filter(Category.id == request.form['id']).\
+            update({'title': request.form['title']})
         message = 'Category updated successfully'
     return render_template("edit-category.html",
-                           title=title,
                            cat=cat,
-                           message=message)
+                           message=message,
+                           loggedIn=auth)
 
 
 # delete category
-@app.route('/catalog/<int:qid>/delete', methods=['POST', 'GET'])
+@app.route('/catalog/category/<int:qid>/delete', methods=['POST', 'GET'])
 def delete_category(qid):
     message = 'Warning! Pressing Submit will permanently delete the category!'
 
@@ -169,9 +165,13 @@ def delete_category(qid):
 # display category with items
 @app.route('/catalog/category/<int:qid>/items', methods=['POST', 'GET'])
 def show_items(qid):
-    items = dbSession.query(Category.title.label("cat_title"), Item.title, Item.description).join(Item).filter(Category.id == qid)
+    auth = is_auth()
+    cat = dbSession.query(Category).filter_by(id=qid)
+    items = dbSession.query(Item).filter_by(category_id=qid).all()
     return render_template("show-category.html",
-                           items=items)
+                           items=items,
+                           category=cat,
+                           loggedIn=auth)
 
 
 # display individual item
@@ -250,7 +250,7 @@ def delete_item(qid):
     if is_auth() is not True:
         return redirect(url_for('home', message="You must be logged-in to that page!"))
     message = 'Warning! Pressing Submit will permanently delete the item!'
-    item = dbSession.query(Item.id, Item.title).filter_by(id=qid)
+    item = dbSession.query(Item.id, Item.title, Item.description).filter_by(category_id=qid)
     if request.method == 'POST':
         message = ''
     return render_template("delete-item.html",

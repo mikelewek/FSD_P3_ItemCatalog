@@ -3,6 +3,6 @@
     {% for row in item %}
         <h1>Item {{ row.title }}</h1>
         <div>{{ row.description }}</div>
-        {% if loggedIn %}<a href="/catalog/item/{{ row.id }}/edit">Edit</a> | <a href="/catalog/item/{{ row.id }}/delete">Delete</a>{% endif %}
+        {% if loggedIn %}<div class="edit"><a href="/catalog/item/{{ row.id }}/edit">Edit</a> | <a href="/catalog/item/{{ row.id }}/delete">Delete</a></div>{% endif %}
     {% endfor %}
 {% endblock %}
