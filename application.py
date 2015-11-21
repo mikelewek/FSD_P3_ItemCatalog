@@ -19,8 +19,8 @@ dbSession = Session()
 
 # This information is obtained upon registration of a new GitHub OAuth
 # application here: https://github.com/settings/applications/new
-client_id = '47447b76a19de415deda'
-client_secret = '535929efe072ba5c9ff3c9de0f29fa74c6f136f0'
+client_id = 'xx'
+client_secret = 'xx'
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
@@ -74,13 +74,21 @@ def is_auth():
 def home():
     auth = is_auth()
     message = ''
+    categories = ''
+    items = ''
 
     if request.method == 'GET':
         message = request.args.get('message')
 
     # get all category and items
+    # or display no results found
     categories = dbSession.query(Category).all()
-    items = dbSession.query(Item).limit(10)
+    if len(categories) == 0:
+        categories = [{'title': 'No Categories found.'}]
+    items = dbSession.query(Category).all()
+    if len(items) == 0:
+        items = [{'title': 'No Items found.'}]
+
     return render_template('index.html',
                            cats=categories,
                            items=items,
@@ -158,12 +166,11 @@ def delete_category(qid):
                            message=message)
 
 
-# display category items
+# display category with items
 @app.route('/catalog/category/<int:qid>/items', methods=['POST', 'GET'])
 def show_items(qid):
-    items = dbSession.query(Category.id, Item.title, Item.description).\
-                join(Item).\
-                filter(Category.id == qid)
+    items = dbSession.query(Category.title.label('cat_title'), Category.id, Item.title.label('item_title'),
+                            Item.description).join(Item).filter(Category.id == qid)
     return render_template("show-category.html",
                            items=items)
 
@@ -192,6 +199,13 @@ def create_item():
     if is_auth() is not True:
         return redirect(url_for('home', message="You must be logged-in to that page!"))
     cats = dbSession.query(Category).all()
+
+    # display message if no categories have been created to
+    # populate the item select dropdown
+    if len(cats) == 0:
+        cats = 0
+        message = 'No Categories found. Creating a Category is ' \
+                  'required prior to creating a new item!'
 
     if request.method == 'POST':
         item = Item(title=request.form['title'],

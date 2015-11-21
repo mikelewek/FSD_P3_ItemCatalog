@@ -10,6 +10,12 @@
 <body {% if bodyClass %}class="{{ bodyClass }}"{% endif %}>
     <nav class="navbar navbar-inverse navbar-static-top">
       <a class="navbar-brand" href="/">Catalog App.</a>
+      {% if loggedIn == True %}
+        <li><a class="nav-item" href="/catalog/category/create" title="Create Category">Create Category</a></li>
+        {% endif %}
+      {% if loggedIn == True %}
+        <li><a class="nav-item" href="/catalog/item/create" title="Create Item">Create Item</a></li>
+        {% endif %}
       <ul class="nav nav-pills">
         <li class="nav-item navbar-right">
             {% if loggedIn != True %}<a class="nav-link" title="Login" href="/login">Login</a>{% endif %}

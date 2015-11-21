@@ -6,9 +6,10 @@
         <div class="alert alert-success">{{ message }}</div>
     {% endif %}
 
+    {% if categories != 0 %}
     <form action="/catalog/item/create" method="post">
         <input type="text" name="title" placeholder="Title">
-        <input type="text" name="description" placeholder="Description">
+        <textarea name="description" placeholder="Description"></textarea>
         <select name="category_id">
             {% for row in categories %}
                 <option value="{{ row.id }}">{{ row.title }}</option>
@@ -16,4 +17,5 @@
         </select>
         <button class="btn btn-default" type="submit" name="submit">Submit</button>
     </form>
+    {% endif %}
 {% endblock %}
