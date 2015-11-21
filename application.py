@@ -121,10 +121,13 @@ def create_category():
         return redirect(url_for('home', message="You must be logged-in to that page!"))
 
     if request.method == 'POST' and is_auth() == True:
-        cat = Category(title=request.form['title'])
-        dbSession.add(cat)
-        dbSession.commit()
-        message = 'Category was inserted into db'
+        if request.form['title']:
+            cat = Category(title=request.form['title'])
+            dbSession.add(cat)
+            dbSession.commit()
+            message = 'Category was inserted into db'
+        else:
+            message = 'A Title is required to add a Category!'
     return render_template("create-category.html",
                            message=message,
                            loggedIn=auth)
@@ -214,13 +217,17 @@ def create_item():
         message = 'No Categories found. Creating a Category is ' \
                   'required prior to creating a new item!'
 
+    # check if data is posted and title was submitted
     if request.method == 'POST':
-        item = Item(title=request.form['title'],
-                    description=request.form['description'],
-                    category_id=request.form['category_id'])
-        dbSession.add(item)
-        dbSession.commit()
-        message = 'Item was inserted into db'
+        if request.form['title']:
+            item = Item(title=request.form['title'],
+                        description=request.form['description'],
+                        category_id=request.form['category_id'])
+            dbSession.add(item)
+            dbSession.commit()
+            message = 'Item was inserted into db'
+        else:
+            message = 'A Title is required to add an Item!'
     return render_template("create-item.html",
                            categories=cats,
                            message=message,
