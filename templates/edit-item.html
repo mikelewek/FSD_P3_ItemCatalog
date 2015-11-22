@@ -8,7 +8,7 @@
     <h1>Edit {{ row.title }}</h1>
     <form action="/catalog/item/{{ row.id }}/edit" method="post">
         <input type="hidden" name="id" value="{{ row.id }}">
-        <input type="text" name="title" value="{{ row.title }}">
+        <input type="text" name="title" value="{{ row.title }}" required>
         <textarea type="text" name="description">{{ row.description }}</textarea>
         <select name="category_id">
             {% for cats in categories %}
