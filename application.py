@@ -181,7 +181,8 @@ def delete_category(qid):
     if auth is not True:
         return redirect(url_for('home', message="You must be "
                                                 "logged-in to that page!"))
-    message = 'Warning! Pressing Submit will permanently delete the category!'
+    message = 'Warning! Pressing Submit will permanently delete the ' \
+              'Category and its Items!'
     cat = dbSession.query(Category).filter_by(id=qid)
 
     if request.method == 'POST':

@@ -11,6 +11,7 @@ class Category(Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     title = Column(String(40), nullable=False)
+    relationship("Item", cascade="all, delete-orphan")
 
 
 class Item(Base):
