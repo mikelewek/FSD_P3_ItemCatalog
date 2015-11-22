@@ -2,7 +2,11 @@
 {% block content %}
     {% for row in category %}
         <h1>{{ row.title }}</h1>
-        {% if loggedIn %}<div class="edit"><a href="/catalog/category/{{ row.id }}/edit">Edit Category</a> | <a href="/catalog/category/{{ row.id }}/delete">Delete Category</a></div>{% endif %}
+        {% if loggedIn %}
+        <div class="edit">
+         <a href="/catalog/category/{{ row.id }}/edit">Edit Category</a> |
+            <a href="/catalog/category/{{ row.id }}/delete">Delete Category</a>
+        </div>{% endif %}
     {% endfor %}
     {% if items|length > 0 %}
         {% for row in items %}

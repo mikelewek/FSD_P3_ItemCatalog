@@ -84,7 +84,9 @@ def home():
     # get all category and items
     # or display no results found
     categories = dbSession.query(Category).all()
-    items = dbSession.query(Item).limit(10)
+    items = dbSession.query(Category.title.label('cat_title'), Item.id,
+                            Item.title, Item.description)\
+        .join(Item).filter(Category.id == Item.category_id)
 
     return render_template('index.html',
                            cats=categories,

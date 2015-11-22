@@ -28,7 +28,8 @@
         <ul>
         {% if items is defined %}
             {% for row in items %}
-                <li><a href="/catalog/item/{{ row.id }}">{{ row.title }}</a></li>
+                <li><a href="/catalog/item/{{ row.id }}">{{ row.title }}</a>
+                    <span>({{ row.cat_title }})</span></li>
             {% endfor %}
         {% else %}
             <li>No Items found.</li>
