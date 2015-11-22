@@ -61,6 +61,11 @@ def callback():
 
 # check if user is authenticated
 def is_auth():
+    """ verify user is logged in
+
+    Check if user is logged in. If user is not
+    logged in, redirect to home and display message.
+    """
     authenticated = False
     try:
         if session['oauth_token']:
@@ -73,10 +78,9 @@ def is_auth():
 # homepage displays categories and associated items
 @app.route('/', methods=['POST', 'GET'])
 def home():
+    # check auth to remove menu link and display creation links
     auth = is_auth()
     message = ''
-    categories = ''
-    items = ''
 
     if request.method == 'GET':
         message = request.args.get('message')
@@ -95,11 +99,10 @@ def home():
                            loggedIn=auth)
 
 
-# catalog JSON endpoint
+# catalog JSON endpoint - show categories and children items
 @app.route('/catalog.json')
 def catalog_json():
     list = []
-    item_list = []
     cats = dbSession.query(Category).all()
 
     for cat in cats:
@@ -111,6 +114,7 @@ def catalog_json():
     return jsonify({"Catalog": list})
 
 
+# get items by category id and return as list
 def item_query(cat_id):
     list = []
     items = dbSession.query(Item).filter_by(category_id=cat_id)
@@ -194,6 +198,7 @@ def delete_category(qid):
 # display category with items
 @app.route('/catalog/category/<int:qid>/items', methods=['POST', 'GET'])
 def show_items(qid):
+    # check auth only to hide menu link
     auth = is_auth()
     cat = dbSession.query(Category).filter_by(id=qid)
     items = dbSession.query(Item).filter_by(category_id=qid).all()
@@ -206,6 +211,7 @@ def show_items(qid):
 # display individual item
 @app.route('/catalog/item/<int:qid>', methods=['POST', 'GET'])
 def show_item(qid):
+    # check auth only to hide menu link
     auth = is_auth()
     item = dbSession.query(Item.id, Item.title, Item.description)\
         .filter_by(id=qid)
@@ -217,12 +223,6 @@ def show_item(qid):
 # create item
 @app.route('/catalog/item/create', methods=['POST', 'GET'])
 def create_item():
-    """ create item
-
-    Check if user is logged in and show form. If user is not
-    logged in, redirect to home and display message. When
-    data is submitted, add object to database.
-    """
     auth = is_auth()
     message = ''
     if is_auth() is not True:
@@ -265,6 +265,7 @@ def edit_item(qid):
     items = dbSession.query(Item).filter_by(id=qid)
     message = ''
 
+    # update item when form is submitted
     if request.method == 'POST':
         dbSession.query(Item).\
             filter(Item.id == request.form['id']).\
@@ -290,6 +291,7 @@ def delete_item(qid):
     item = dbSession.query(Item.id, Item.title, Item.description)\
         .filter_by(id=qid)
 
+    # delete item when form is submitted
     if request.method == 'POST':
         message = 'Item Deleted.'
         item_del = dbSession.query(Item).filter_by(id=qid).first()
