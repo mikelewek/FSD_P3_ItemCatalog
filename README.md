@@ -35,4 +35,5 @@ After clicking the Login link, you will be required to authenticate through GitH
 
 
 Requests-OAuthlib used for GitHub OAuth: [Requests-OAuthlib] (http://requests-oauthlib.readthedocs.org/en/latest/index.html)
+
 If the user is not authorized and attempts to visit a restricted page (create, update, or delete categories or items), the user will be redirected back to the homepage.
