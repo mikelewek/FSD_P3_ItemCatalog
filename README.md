@@ -1,5 +1,4 @@
 ##Catalog App. - FSD Project 3
----------------------------
 This application uses CRUD to display, create, update, and delete catalog categories and associated items.
 GitHub OAuth2 is used to authenticate users to store a session variable: <code>/login</code>
 A JSON endpoint is available for catalog/item data at: <code>/catalog.json</code>
