@@ -6,7 +6,6 @@ GitHub OAuth2 is used to authenticate users to store a session variable: <code>/
 A JSON endpoint is available for catalog/item data at: <code>/catalog.json</code>
 
 ###The Repo. Contains the Following Files
--------------------------------------
  1. application.py - Contains routing and functionality.
  2. database_setup.py - Contains database class to generate catalog.db - Will overwrite catalog.db with a blank version if db exists prior to running the script.
  3. catalog.db - Database for project.
@@ -15,7 +14,6 @@ A JSON endpoint is available for catalog/item data at: <code>/catalog.json</code
  6. README.md
 
 ###How to Run the Application
--------------------------
 Python 2.7, PostgreSQL, requests_oathlib, and Flask-Login must be installed and configured.
 
 Creating a GitHub account and an app. is necessary to obtain and replace the <code>client_id</code> and <code>client_secret</code> variables at the top of the application.py file.
