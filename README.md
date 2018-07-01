@@ -1,11 +1,11 @@
-##Catalog App. - FSD Project 3
+## Catalog App. - FSD Project 3
 This application uses CRUD to display, create, update, and delete catalog categories and associated items.
 
 GitHub OAuth2 is used to authenticate users to store a session variable: <code>/login</code>
 
 A JSON endpoint is available for catalog/item data at: <code>/catalog.json</code>
 
-###The Repo. Contains the Following Files
+### The Repo. Contains the Following Files
  1. application.py - Contains routing and functionality.
  2. database_setup.py - Contains database class to generate catalog.db - Will overwrite catalog.db with a blank version if db exists prior to running the script.
  3. catalog.db - Database for project.
@@ -13,7 +13,7 @@ A JSON endpoint is available for catalog/item data at: <code>/catalog.json</code
  5. static/css/style.less - Contains Less CSS for template styling.
  6. README.md
 
-###How to Run the Application
+### How to Run the Application
 Python 2.7, PostgreSQL, requests_oathlib, and Flask-Login must be installed and configured.
 
 Creating a GitHub account and an app. is necessary to obtain and replace the <code>client_id</code> and <code>client_secret</code> variables at the top of the application.py file.
